@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Filament\Resources\Jailbooks;
+
+use App\Filament\Resources\Jailbooks\Pages\CreateJailbook;
+use App\Filament\Resources\Jailbooks\Pages\EditJailbook;
+use App\Filament\Resources\Jailbooks\Pages\ListJailbooks;
+use App\Filament\Resources\Jailbooks\Schemas\JailbookForm;
+use App\Filament\Resources\Jailbooks\Tables\JailbooksTable;
+use App\Models\Jailbook;
+use BackedEnum;
+use UnitEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+
+class JailbookResource extends Resource
+{
+    protected static ?string $model = Jailbook::class;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Jail Management';
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingLibrary;
+
+    public static function form(Schema $schema): Schema
+    {
+        return JailbookForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return JailbooksTable::configure($table);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListJailbooks::route('/'),
+            'create' => CreateJailbook::route('/create'),
+            'edit' => EditJailbook::route('/{record}/edit'),
+        ];
+    }
+}

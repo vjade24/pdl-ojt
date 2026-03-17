@@ -1,0 +1,14 @@
+[90m= [39m[
+    "[32mid[39m",
+    "[32mjailbook_id[39m",
+    "[32mcourt_order_id[39m",
+    "[32mrelease_date[39m",
+    "[32mrelease_reason[39m",
+    "[32mremarks[39m",
+    "[32mreceived_by[39m",
+    "[32mapproved_by[39m",
+    "[32mstatus[39m",
+    "[32mcreated_at[39m",
+    "[32mupdated_at[39m",
+  ]
+
