@@ -22,6 +22,8 @@ class FingerprintResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Case Management';
 
+    protected static ?int $navigationSort = 5;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFingerPrint;
 
     public static function form(Schema $schema): Schema
@@ -36,11 +38,11 @@ class FingerprintResource extends Resource
 
 
     public static function getRelations(): array
-    {
+{
     return [
-        SpecimensRelationManager::class,
+        \App\Filament\Resources\Fingerprints\RelationManagers\SpecimensRelationManager::class,
     ];
-    }
+}
 
     public static function getPages(): array
 {

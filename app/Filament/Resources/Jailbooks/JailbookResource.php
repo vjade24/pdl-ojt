@@ -19,7 +19,9 @@ class JailbookResource extends Resource
 {
     protected static ?string $model = Jailbook::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Jail Management';
+    protected static string|UnitEnum|null $navigationGroup = 'Case Management';
+
+    protected static ?int $navigationSort = 2;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingLibrary;
 

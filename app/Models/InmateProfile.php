@@ -20,9 +20,7 @@ class InmateProfile extends Model
         'complexion',
         'religion_id',
         'ethnicity_id',
-        'province_id',
-        'municipality_id',
-        'barangay_id',
+        'place_of_birth',
         'mother_name',
         'father_name',
     ];
@@ -56,4 +54,23 @@ class InmateProfile extends Model
     {
         return trim("{$this->firstname} {$this->middlename} {$this->lastname} {$this->suffix}");
     }
+
+    public function jailbook()
+    {
+    return $this->hasOne(\App\Models\Jailbook::class, 'inmate_profile_id', 'id');
+    }
+
+    public function jailbooks()
+    {
+    return $this->hasMany(Jailbook::class);
+    }
+    public function fingerprints()
+    {
+    return $this->hasMany(Fingerprint::class);
+    }
+
+public function fingerprint()
+{
+    return $this->hasOne(\App\Models\Fingerprint::class, 'inmate_profile_id', 'id');
 }
+}   

@@ -19,7 +19,9 @@ class Fingerprint extends Model
     }
 
     public function specimens()
-    {
-        return $this->hasMany(Specimen::class);
-    }
+{
+    return $this->hasMany(\App\Models\Specimen::class);
+}
+
+
 }

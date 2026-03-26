@@ -20,6 +20,8 @@ class EscortingScheduleResource extends Resource
     protected static ?string $model = EscortingSchedule::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'Case Management';
+    
+    protected static ?int $navigationSort = 4;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
 

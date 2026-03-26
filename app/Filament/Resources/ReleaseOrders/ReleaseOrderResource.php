@@ -21,6 +21,8 @@ class ReleaseOrderResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Case Management';
 
+    protected static ?int $navigationSort = 6;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentCheck;
 
     public static function form(Schema $schema): Schema

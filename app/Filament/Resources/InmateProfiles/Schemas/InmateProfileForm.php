@@ -9,145 +9,127 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+
 class InmateProfileForm
 {
     public static function configure(Schema $schema): Schema
-{
-    return $schema
-        ->columns(1)
-        ->components([
+    {
+        return $schema
+            ->columns(1)
+            ->components([
 
-            Section::make('Basic Information')
-                ->columns([
-                    'sm' => 1,
-                    'md' => 2,
-                    'xl' => 3,
-                ])
-                ->schema([
+                // 🔹 BASIC INFORMATION
+                Section::make('Basic Information')
+                    ->description('Personal details of the inmate')
+                    ->collapsible()
+                    ->collapsed() // 👈 collapsed by default
+                    ->columns([
+                        'sm' => 1,
+                        'md' => 2,
+                        'xl' => 3,
+                    ])
+                    ->schema([
 
-                    TextInput::make('pdl_number')
-                        ->label('PDL Number')
-                        ->required()
-                        ->unique(ignoreRecord: true)
-                        ->placeholder('Enter PDL number'),
+                        TextInput::make('firstname')
+                            ->label('First Name')
+                            ->required(),
 
-                    DatePicker::make('birthdate')
-                        ->required()
-                        ->native(false)
-                        ->displayFormat('m/d/Y'),
+                        TextInput::make('lastname')
+                            ->label('Last Name')
+                            ->required(),
 
-                    Select::make('sex')
-                        ->options([
-                            'Male' => 'Male',
-                            'Female' => 'Female',
-                        ])
-                        ->required()
-                        ->native(false),
+                        TextInput::make('middlename')
+                            ->label('Middle Name'),
 
-                    TextInput::make('firstname')
-                        ->required(),
+                        DatePicker::make('birthdate')
+                            ->label('Birthdate')
+                            ->required()
+                            ->native(false)
+                            ->displayFormat('m/d/Y'),
 
-                    TextInput::make('middlename'),
+                        Select::make('sex')
+                            ->label('Sex')
+                            ->options([
+                                'Male' => 'Male',
+                                'Female' => 'Female',
+                            ])
+                            ->required()
+                            ->native(false),
 
-                    TextInput::make('lastname')
-                        ->required(),
+                        Select::make('suffix')
+                            ->label('Suffix')
+                            ->options([
+                                'Jr' => 'Jr',
+                                'Sr' => 'Sr',
+                                'III' => 'III',
+                                'IV' => 'IV',
+                                'V' => 'V',
+                            ])
+                            ->native(false),
 
-                    TextInput::make('suffix'),
+                        Select::make('civil_status')
+                            ->label('Civil Status')
+                            ->options([
+                                'Single' => 'Single',
+                                'Married' => 'Married',
+                                'Widowed' => 'Widowed',
+                                'Separated' => 'Separated',
+                            ])
+                            ->required()
+                            ->native(false),
 
-                    Select::make('civil_status')
-                        ->options([
-                            'Single' => 'Single',
-                            'Married' => 'Married',
-                            'Widowed' => 'Widowed',
-                            'Separated' => 'Separated',
-                        ])
-                        ->required()
-                        ->native(false)
-                        ->columnSpan(1),
+                        TextInput::make('mother_name')
+                            ->label("Mother's Name")
+                            ->columnSpanFull(),
 
-                    TextInput::make('mother_name')
-                        ->label("Mother's Name")
-                        ->columnSpanFull(),
+                        TextInput::make('father_name')
+                            ->label("Father's Name")
+                            ->columnSpanFull(),
+                    ]),
 
-                    TextInput::make('father_name')
-                        ->label("Father's Name")
-                        ->columnSpanFull(),
-                ])
-                ->collapsible(),
+               
+                    Section::make('Place of Birth')
+                            ->description('Birth location of the inmate')
+                            ->collapsible()
+                            ->collapsed()
+                            ->columns([
+                            'sm' => 1,
+                            'md' => 2,
+                    ])
+                    ->schema([
+                   TextInput::make('place_of_birth')
+                    ->label('Place of Birth')
+                    ->placeholder('e.g. Davao City, Philippines')
+                    ->required()
+                    ->columnSpanFull(),
 
-           
-            
-            Section::make('Address Information')
-    ->columns([
-        'sm' => 1,
-        'md' => 3,
-    ])
-    ->schema([
+                        ]),
 
-      
-        Select::make('province_id')
-            ->label('Province')
-            ->relationship('province', 'province_name')
-            ->searchable()
-            ->preload()
-            ->live()
-            ->afterStateUpdated(function (Set $set) {
-                $set('municipality_id', null);
-                $set('barangay_id', null);
-            })
-            ->required(),
+               
+                Section::make('Other Information')
+                    ->description('Additional classification details')
+                    ->collapsible()
+                    ->collapsed()
+                    ->columns([
+                        'sm' => 1,
+                        'md' => 2,
+                    ])
+                    ->schema([
 
-    
-        Select::make('municipality_id')
-            ->label('Municipality')
-            ->options(function (Get $get) {
-                return \App\Models\Municipality::query()
-                    ->where('province_id', $get('province_id'))
-                    ->pluck('municipality_name', 'id');
-            })
-            ->searchable()
-            ->live()
-            ->disabled(fn (Get $get) => ! $get('province_id'))
-            ->afterStateUpdated(function (Set $set) {
-                $set('barangay_id', null);
-            })
-            ->required(),
+                        Select::make('religion_id')
+                            ->label('Religion')
+                            ->relationship('religion', 'religion_name')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
 
-       
-        Select::make('barangay_id')
-            ->label('Barangay')
-            ->options(function (Get $get) {
-                return \App\Models\Barangay::query()
-                    ->where('municipality_id', $get('municipality_id'))
-                    ->pluck('barangay_name', 'id');
-            })
-            ->searchable()
-            ->disabled(fn (Get $get) => ! $get('municipality_id'))
-            ->required(),
-    ])
-    ->collapsible(),
-
-          
-            Section::make('Other Information')
-                ->columns([
-                    'sm' => 1,
-                    'md' => 2,
-                ])
-                ->schema([
-
-                    Select::make('religion_id')
-                        ->relationship('religion', 'religion_name')
-                        ->searchable()
-                        ->preload()
-                        ->required(),
-
-                    Select::make('ethnicity_id')
-                        ->relationship('ethnicity', 'ethnicity_name')
-                        ->searchable()
-                        ->preload()
-                        ->required(),
-                ])
-                ->collapsible(),
-        ]);
-}
+                        Select::make('ethnicity_id')
+                            ->label('Ethnicity')
+                            ->relationship('ethnicity', 'ethnicity_name')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                    ]),
+            ]);
+    }
 }

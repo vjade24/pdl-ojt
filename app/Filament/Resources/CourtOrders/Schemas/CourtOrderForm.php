@@ -18,43 +18,47 @@ class CourtOrderForm
             ->columns(1)
             ->components([
 
-                Section::make('Court Order Information')
-                    ->columns(2)
-                    ->schema([
+               Section::make('Court Order Information')
+    ->columns(2)
+    ->schema([
 
-                        TextInput::make('case_no')
-                            ->required(),
+        TextInput::make('order_no')
+            ->label('Order Number')
+            ->required()
+            ->unique(ignoreRecord: true)
+            ->placeholder('e.g. CO-001'),
 
-                        TextInput::make('order_no'),
+        TextInput::make('case_no')
+            ->required(),
 
-                        Select::make('order_category')
-                            ->options([
-                                'Commitment Order' => 'Commitment Order',
-                                'Office Memo Resolutions' => 'Office Memo Resolutions',
-                                'Subpoena' => 'Subpoena',
-                                'Discharge Order' => 'Discharge Order',
-                                'Escorting Order' => 'Escorting Order',
-                                'Sentence Order' => 'Sentence Order',
-                            ])
-                            ->required(),
+        Select::make('order_category')
+            ->options([
+                'Commitment Order' => 'Commitment Order',
+                'Office Memo Resolutions' => 'Office Memo Resolutions',
+                'Subpoena' => 'Subpoena',
+                'Discharge Order' => 'Discharge Order',
+                'Escorting Order' => 'Escorting Order',
+                'Sentence Order' => 'Sentence Order',
+            ])
+            ->required(),
 
-                        DatePicker::make('order_date')
-                            ->required(),
+        DatePicker::make('order_date')
+            ->required(),
 
-                        DateTimePicker::make('receive_date'),
+        DateTimePicker::make('receive_date'),
 
-                        TextInput::make('receive_by'),
+        TextInput::make('receive_by'),
 
-                        TextInput::make('approved_by'),
+        DateTimePicker::make('approved_date'),
 
-                        DateTimePicker::make('approved_date'),
+        TextInput::make('approved_by'),
 
-                        FileUpload::make('attachment')
-                            ->multiple()
-                            ->directory('court-orders')
-                            ->downloadable()
-                            ->previewable(),
-                    ])
+        FileUpload::make('attachment')
+            ->multiple()
+            ->directory('court-orders')
+            ->downloadable()
+            ->previewable(),
+    ])
                     ->collapsible(),
             ]);
     }

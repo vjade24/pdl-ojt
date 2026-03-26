@@ -28,6 +28,12 @@ class AdminPanelProvider extends PanelProvider
         ->id('admin')
         ->path('admin')
         ->login()
+        ->navigationGroups([
+            'Case Management',
+            'Legal Management',
+            'Inmate Classification',
+            'Jail Management',
+            ])
         ->colors([
             'primary' => Color::Amber,
         ])

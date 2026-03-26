@@ -9,9 +9,9 @@ class Jailbook extends Model
     protected $fillable = [
         'court_order_id',
         'inmate_profile_id',
-        'add_province_id',
-        'add_municipality_id',
-        'add_barangay_id',
+        'add_province_name',
+        'add_municipality_name',
+        'add_barangay_name',
         'court_id',
         'judge_id',
         'station_id',
@@ -68,18 +68,15 @@ class Jailbook extends Model
     {
         return $this->belongsTo(Offense::class);
     }
-    public function province()
-    {
-    return $this->belongsTo(Province::class, 'add_province_id');
-    }
 
-    public function municipality()
+    public function courtOrder()
     {
-    return $this->belongsTo(Municipality::class, 'add_municipality_id');
-    }   
-
-    public function barangay()
-    {
-    return $this->belongsTo(Barangay::class, 'add_barangay_id');
+    return $this->belongsTo(CourtOrder::class);
     }
+    
+    public function inmateProfile()
+    {
+    return $this->belongsTo(InmateProfile::class);
+    }
+    
 }

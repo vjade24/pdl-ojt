@@ -12,16 +12,19 @@ class MunicipalityForm
     {
         return $schema
             ->components([
-                Select::make('province_id')
-                    ->label('Province')
-                    ->relationship('province', 'province_name')
-                    ->searchable()
-                    ->required(),
 
                 TextInput::make('municipality_name')
                     ->label('Municipality Name')
                     ->required()
                     ->maxLength(255),
+
+                Select::make('province_id')
+                    ->label('Province')
+                    ->relationship('province', 'province_name')
+                    
+                    ->required(),
+
+                
             ]);
     }
 }

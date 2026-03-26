@@ -12,14 +12,17 @@ class BarangayForm
     {
         return $schema
             ->components([
-                Select::make('municipality_id')
-                    ->relationship('municipality', 'municipality_name')
-                    ->searchable()
-                    ->required(),
 
                 TextInput::make('barangay_name')
                     ->required()
                     ->maxLength(255),
+
+                Select::make('municipality_id')
+                    ->relationship('municipality', 'municipality_name')
+                    
+                    ->required(),
+
+               
             ]);
     }
 }

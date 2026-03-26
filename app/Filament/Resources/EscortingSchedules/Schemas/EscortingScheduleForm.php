@@ -24,12 +24,12 @@ class EscortingScheduleForm
 
                         Select::make('jailbook_id')
                             ->relationship('jailbook', 'case_no')
-                            ->searchable()
+                            
                             ->required(),
 
                         Select::make('court_order_id')
-                            ->relationship('courtOrder', 'order_no')
-                            ->searchable(),
+                            ->relationship('courtOrder', 'order_no'),
+                            
 
                         DatePicker::make('escort_date')
                             ->required(),

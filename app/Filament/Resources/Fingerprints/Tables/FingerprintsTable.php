@@ -9,6 +9,7 @@ use Filament\Actions\ViewAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Columns\ImageColumn;
 
 class FingerprintsTable
 {
@@ -16,10 +17,7 @@ class FingerprintsTable
     {
         return $table
             ->columns([
-                TextColumn::make('inmate.pdl_number')
-                    ->label('PDL No')
-                    ->searchable()
-                    ->sortable(),
+               
 
                 TextColumn::make('inmate.full_name')
                     ->label('Inmate Name')
@@ -33,6 +31,19 @@ class FingerprintsTable
                 TextColumn::make('taken_by')
                     ->label('Taken By')
                     ->searchable(),
+                
+                
+                TextColumn::make('specimens')
+                    ->label('Fingers')
+                    ->formatStateUsing(fn ($record) =>
+                    $record->specimens->pluck('finger_name')->join(', ')
+                    ),
+
+  
+             
+                TextColumn::make('created_at')
+                    ->dateTime('M d, Y'),
+
 
                 TextColumn::make('created_at')
                     ->dateTime('M d, Y'),

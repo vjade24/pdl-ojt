@@ -26,4 +26,6 @@ class CourtOrder extends Model
     {
         return $this->hasMany(Jailbook::class);
     }
+
+    
 }

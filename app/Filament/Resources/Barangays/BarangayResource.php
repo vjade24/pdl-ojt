@@ -21,6 +21,8 @@ class BarangayResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'System Location Management';
 
+    protected static ?int $navigationSort = 3;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMap;
 
     public static function form(Schema $schema): Schema

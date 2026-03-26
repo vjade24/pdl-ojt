@@ -17,8 +17,8 @@ class FingerprintForm
             ->components([
 
                 Select::make('inmate_profile_id')
-                    ->relationship('inmate', 'pdl_number')
-                    ->searchable()
+                    ->relationship('inmate', 'firstname')
+                    
                     ->required(),
 
                 DatePicker::make('fingerprint_date'),

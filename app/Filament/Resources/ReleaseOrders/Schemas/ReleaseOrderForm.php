@@ -23,12 +23,12 @@ class ReleaseOrderForm
 
                         Select::make('jailbook_id')
                             ->relationship('jailbook', 'case_no')
-                            ->searchable()
+                            
                             ->required(),
 
                         Select::make('court_order_id')
                             ->relationship('courtOrder', 'order_no')
-                            ->searchable()
+                            
                             ->required(),
 
                         DatePicker::make('release_date')

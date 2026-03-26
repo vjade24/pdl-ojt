@@ -7,6 +7,10 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\ViewAction;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Placeholder;
 class InmateProfilesTable
 {
     public static function configure(Table $table): Table
@@ -14,21 +18,15 @@ class InmateProfilesTable
         return $table
             ->columns([
 
-            TextColumn::make('pdl_number')
-                ->label('PDL Number')
-                ->searchable()
-                ->sortable(),
+            
 
-            TextColumn::make('firstname')
-                ->searchable()
-                ->sortable(),
-
-            TextColumn::make('middlename')
-                ->searchable(),
-
-            TextColumn::make('lastname')
-                ->searchable()
-                ->sortable(),
+           TextColumn::make('fullname')
+            ->label('Full Name')
+            ->getStateUsing(fn ($record) => 
+            trim("{$record->firstname} {$record->middlename} {$record->lastname}")
+            )
+            ->searchable()
+            ->sortable(),
 
             TextColumn::make('suffix'),
 
@@ -45,21 +43,11 @@ class InmateProfilesTable
 
             TextColumn::make('father_name')
                 ->limit(20),
+            
+            TextColumn::make('place_of_birth')
+                ->limit(20),
 
-            TextColumn::make('province.province_name')
-                ->label('Province')
-                ->sortable()
-                ->searchable(),
-
-            TextColumn::make('municipality.municipality_name')
-                ->label('Municipality')
-                ->sortable()
-                ->searchable(),
-
-            TextColumn::make('barangay.barangay_name')
-                ->label('Barangay')
-                ->sortable()
-                ->searchable(),
+            
 
             TextColumn::make('religion.religion_name')
                 ->label('Religion')
@@ -72,15 +60,19 @@ class InmateProfilesTable
                 ->searchable(),
         ])
         ->filters([
-            //
+            
         ])
         ->recordActions([
-            EditAction::make(),
-        ])
+        EditAction::make(),
+        ViewAction::make(),
+
+       
+       
+    ])
         ->toolbarActions([
             BulkActionGroup::make([
                 DeleteBulkAction::make(),
             ]),
-        ]);
-}
-}
+            ]);
+    }
+        }

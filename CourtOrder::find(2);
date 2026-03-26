@@ -1,0 +1,10 @@
+[90m= [39m[34;4mApp\Models\Judge[39;24m {#7547
+    [34mid[39m: [35m1[39m,
+    [34mfirstname[39m: "[32mCharles[39m",
+    [34mmiddlename[39m: "[32mS[39m",
+    [34mlastname[39m: "[32mmorales[39m",
+    [34msuffix[39m: [36mnull[39m,
+    [34mcreated_at[39m: "[32m2026-02-27 01:37:15[39m",
+    [34mupdated_at[39m: "[32m2026-02-27 01:37:33[39m",
+  }
+

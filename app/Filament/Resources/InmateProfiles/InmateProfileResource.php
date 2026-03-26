@@ -14,12 +14,16 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-
+use App\Filament\Resources\InmateProfiles\RelationManagers\JailbookRelationManager;
+use App\Filament\Resources\InmateProfiles\RelationManagers\FingerprintRelationManager;
+use App\Filament\Resources\InmateProfiles\Pages\ViewInmateProfile;
 class InmateProfileResource extends Resource
 {
     protected static ?string $model = InmateProfile::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Jail Management';
+    protected static string|UnitEnum|null $navigationGroup = 'Case Management';
+
+    protected static ?int $navigationSort = 1;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedIdentification;
 
@@ -36,7 +40,8 @@ class InmateProfileResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            JailbookRelationManager::class,
+            FingerprintRelationManager::class,
         ];
     }
 
@@ -46,6 +51,8 @@ class InmateProfileResource extends Resource
             'index' => ListInmateProfiles::route('/'),
             'create' => CreateInmateProfile::route('/create'),
             'edit' => EditInmateProfile::route('/{record}/edit'),
+            'view' => ViewInmateProfile::route('/{record}')
+            
         ];
     }
 }
