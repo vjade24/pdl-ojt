@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources\InmateProfiles\Schemas;
 
+use App\Models\InmateProfile;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Utilities\Set;
 
 class InmateProfileForm
 {
@@ -29,6 +28,21 @@ class InmateProfileForm
                         'xl' => 3,
                     ])
                     ->schema([
+
+                        TextInput::make('pdl_number')
+                            ->label('PDL Number')
+                            ->default(function () {
+                                $latest = InmateProfile::orderBy('id', 'desc')->value('pdl_number');
+                                if (! $latest) {
+                                    return 'PDL-00001';
+                                }
+                                $number = (int) preg_replace('/\D/', '', $latest) + 1;
+                                return 'PDL-' . str_pad($number, 5, '0', STR_PAD_LEFT);
+                            })
+                            ->disabled()
+                            ->dehydrated()
+                            ->required()
+                            ->columnSpanFull(),
 
                         TextInput::make('firstname')
                             ->label('First Name')
@@ -121,14 +135,24 @@ class InmateProfileForm
                             ->relationship('religion', 'religion_name')
                             ->searchable()
                             ->preload()
-                            ->required(),
+                            ->required()
+                            ->createOptionForm([
+                                TextInput::make('religion_name')
+                                    ->label('Religion Name')
+                                    ->required(),
+                            ]),
 
                         Select::make('ethnicity_id')
                             ->label('Ethnicity')
                             ->relationship('ethnicity', 'ethnicity_name')
                             ->searchable()
                             ->preload()
-                            ->required(),
+                            ->required()
+                            ->createOptionForm([
+                                TextInput::make('ethnicity_name')
+                                    ->label('Ethnicity Name')
+                                    ->required(),
+                            ]),
                     ]),
             ]);
     }

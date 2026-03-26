@@ -51,7 +51,7 @@ class JailbookForm
                         $set('case_no', $courtOrder->case_no);
 
           
-                        $set('court_id', $courtOrder->court_id);
+                        // $set('court_id', $courtOrder->court_id);
                     }
                     }),
                         TextInput::make('case_no')
@@ -59,24 +59,57 @@ class JailbookForm
                             ->required(),
 
                         Select::make('court_id')
-                        ->relationship('court', 'court_name')
-    
-                        ->dehydrated() 
-                        ->required(),
+                            ->label('Court Name')
+                            ->relationship('court', 'court_name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->createOptionForm([
+                                TextInput::make('court_name')
+                                    ->label('Court Name')
+                                    ->required(),
+                            ]),
 
                        
 
                         Select::make('judge_id')
                             ->relationship('judge', 'lastname')
-                            ->required(),
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->createOptionForm([
+                                TextInput::make('lastname')
+                                ->label('Last Name')
+                                ->required(),
+                                TextInput::make('firstname')
+                                ->label('First Name')
+                                ->required(),
+                                TextInput::make('middlename')
+                                ->label('Middle Name'),
+                                TextInput::make('suffix')
+                                ->label('Suffix'),
+                            ]),
 
                         Select::make('station_id')
                             ->relationship('station', 'station_name')
-                            ->required(),
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->createOptionForm([
+                                TextInput::make('station_name')
+                                    ->label('Station Name')
+                                    ->required(),
+                            ]),
 
                         Select::make('offense_id')
                             ->relationship('offense', 'offense_descr')
-                            ->required(),
+                            ->required()
+                            ->preload()
+                            ->createOptionForm([
+                                TextInput::make('offense_descr')
+                                    ->label('Offense Description')
+                                    ->required(),
+                            ]),
                     ])
                     ->collapsible(),
 
@@ -142,13 +175,24 @@ class JailbookForm
                 Section::make('Personal information')
                     ->columns(3)
                     ->schema([
-                        TextInput::make('civilStatus'),
+                        Select::make('civilStatus')
+                            ->label('Civil Status')
+                            ->options([
+                                'Single' => 'Single',
+                                'Married' => 'Married',
+                                'Widowed' => 'Widowed',
+                                'Separated' => 'Separated',
+                                'Annulled' => 'Annulled',
+                                'Divorced' => 'Divorced',
+                            ])
+                            ->required(),
                         TextInput::make('height'),
                         TextInput::make('weight'),
                         TextInput::make('hair'),
                         TextInput::make('alias'),
                         TextInput::make('complexion'),
-                        TextInput::make('occupation'),
+                        TextInput::make('occupation')
+                        ->columnSpanFull(),
 
                         Toggle::make('father_decease_tag'),
                         Toggle::make('mother_decease_tag'),

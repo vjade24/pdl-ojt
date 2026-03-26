@@ -8,9 +8,6 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\ViewAction;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Placeholder;
 class InmateProfilesTable
 {
     public static function configure(Table $table): Table
@@ -18,7 +15,11 @@ class InmateProfilesTable
         return $table
             ->columns([
 
-            
+                TextColumn::make('pdl_number')
+                    ->label('PDL #')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable(),
 
            TextColumn::make('fullname')
             ->label('Full Name')
