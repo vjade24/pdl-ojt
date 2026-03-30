@@ -7,6 +7,7 @@ use App\Filament\Resources\CourtOrders\Pages\EditCourtOrder;
 use App\Filament\Resources\CourtOrders\Pages\ListCourtOrders;
 use App\Filament\Resources\CourtOrders\Schemas\CourtOrderForm;
 use App\Filament\Resources\CourtOrders\Tables\CourtOrdersTable;
+use App\Filament\Resources\CourtOrders\RelationManagers\JailbookRelationManager;
 use App\Models\CourtOrder;
 use BackedEnum;
 use UnitEnum;
@@ -38,7 +39,7 @@ class CourtOrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            JailbookRelationManager::class,
         ];
     }
 

@@ -12,4 +12,9 @@ class Judge extends Model
         'lastname',
         'suffix',
     ];
+
+    public function getFullNameAttribute(): string
+    {
+        return trim("{$this->firstname} {$this->middlename} {$this->lastname} {$this->suffix}");
+    }
 }
