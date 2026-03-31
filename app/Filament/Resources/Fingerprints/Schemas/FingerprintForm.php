@@ -7,7 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
-
+use App\Filament\Resources\Jailbooks\RelationManagers\FingerprintRelationManager; 
 class FingerprintForm
 {
     public static function configure(Schema $schema): Schema
@@ -16,10 +16,11 @@ class FingerprintForm
             ->columns(2)
             ->components([
 
-                Select::make('inmate_profile_id')
-                    ->relationship('inmate', 'firstname')
-                    
-                    ->required(),
+               
+                  Select::make('jailbook_id')
+                    ->relationship('jailbook', 'case_no')
+                    ->required()
+                    ->hiddenOn(FingerprintRelationManager::class),
 
                 DatePicker::make('fingerprint_date'),
 
@@ -27,6 +28,10 @@ class FingerprintForm
 
                 Textarea::make('remarks')
                     ->columnSpanFull(),
+
+                 
+
+               
             ]);
     }
 }

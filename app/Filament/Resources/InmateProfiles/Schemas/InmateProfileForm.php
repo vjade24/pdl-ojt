@@ -8,7 +8,10 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Wizard;
+use Filament\Schemas\Components\Wizard\Step;
 class InmateProfileForm
 {
     public static function configure(Schema $schema): Schema
@@ -16,12 +19,11 @@ class InmateProfileForm
         return $schema
             ->columns(1)
             ->components([
+                Wizard::make([
 
-                // 🔹 BASIC INFORMATION
-                Section::make('Basic Information')
-                    ->description('Personal details of the inmate')
-                    ->collapsible()
-                    ->collapsed() // 👈 collapsed by default
+             
+                Step::make('Basic Information')
+                    ->description('Personal details of the inmate')                    
                     ->columns([
                         'sm' => 1,
                         'md' => 2,
@@ -29,20 +31,7 @@ class InmateProfileForm
                     ])
                     ->schema([
 
-                        TextInput::make('pdl_number')
-                            ->label('PDL Number')
-                            ->default(function () {
-                                $latest = InmateProfile::orderBy('id', 'desc')->value('pdl_number');
-                                if (! $latest) {
-                                    return 'PDL-00001';
-                                }
-                                $number = (int) preg_replace('/\D/', '', $latest) + 1;
-                                return 'PDL-' . str_pad($number, 5, '0', STR_PAD_LEFT);
-                            })
-                            ->disabled()
-                            ->dehydrated()
-                            ->required()
-                            ->columnSpanFull(),
+                        
 
                         TextInput::make('firstname')
                             ->label('First Name')
@@ -102,33 +91,23 @@ class InmateProfileForm
                     ]),
 
                
-                    Section::make('Place of Birth')
-                            ->description('Birth location of the inmate')
-                            ->collapsible()
-                            ->collapsed()
-                            ->columns([
-                            'sm' => 1,
-                            'md' => 2,
-                    ])
-                    ->schema([
-                   TextInput::make('place_of_birth')
-                    ->label('Place of Birth')
-                    ->placeholder('e.g. Davao City, Philippines')
-                    ->required()
-                    ->columnSpanFull(),
-
-                        ]),
+                  
 
                
-                Section::make('Other Information')
+                Step::make('Other Information')
                     ->description('Additional classification details')
-                    ->collapsible()
-                    ->collapsed()
+                   
                     ->columns([
                         'sm' => 1,
                         'md' => 2,
                     ])
                     ->schema([
+                        TextInput::make('place_of_birth')
+                            ->label('Place of Birth')
+                            ->placeholder('e.g. Davao City, Philippines')
+                            ->required()
+                            ->columnSpanFull(),
+
 
                         Select::make('religion_id')
                             ->label('Religion')
@@ -154,6 +133,7 @@ class InmateProfileForm
                                     ->required(),
                             ]),
                     ]),
+                ])
             ]);
     }
 }

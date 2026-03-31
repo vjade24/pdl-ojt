@@ -48,7 +48,7 @@ return new class extends Migration
         $table->string('educ_attainment')->nullable();
         $table->string('place_visited')->nullable();
 
-        // 🔹 Arrest & Processing
+     
         $table->dateTime('date_received')->nullable();
         $table->string('endorsing_officer')->nullable();
         $table->text('circum_arrest')->nullable();
@@ -58,7 +58,6 @@ return new class extends Migration
         $table->string('chief_admin')->nullable();
         $table->string('prov_warden')->nullable();
 
-       
         $table->date('detention_from')->nullable();
         $table->date('detention_to')->nullable();
         $table->string('status')->default('Detained');

@@ -15,11 +15,7 @@ class InmateProfilesTable
         return $table
             ->columns([
 
-                TextColumn::make('pdl_number')
-                    ->label('PDL #')
-                    ->searchable()
-                    ->sortable()
-                    ->copyable(),
+               
 
            TextColumn::make('fullname')
             ->label('Full Name')
@@ -29,7 +25,7 @@ class InmateProfilesTable
             ->searchable()
             ->sortable(),
 
-            TextColumn::make('suffix'),
+            
 
             TextColumn::make('birthdate')
                 ->date('m/d/Y')

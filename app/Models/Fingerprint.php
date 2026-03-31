@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Fingerprint extends Model
 {
     protected $fillable = [
-        'inmate_profile_id',
+        'jailbook_id',
         'fingerprint_date',
         'taken_by',
         'remarks',
@@ -19,9 +19,13 @@ class Fingerprint extends Model
     }
 
     public function specimens()
-{
+    {
     return $this->hasMany(\App\Models\Specimen::class);
-}
+    }
+    public function jailbook()
+    {
+    return $this->belongsTo(Jailbook::class);
+    }
 
 
 }

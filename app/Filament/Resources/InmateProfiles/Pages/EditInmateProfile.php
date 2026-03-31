@@ -37,4 +37,11 @@ class EditInmateProfile extends EditRecord
             ]);
         }
     }
-}
+
+    public function getTitle(): string
+    {
+    return $this->record->firstname . ' ' .
+           $this->record->middlename . ' ' .
+           $this->record->lastname;
+    }
+    }

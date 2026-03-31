@@ -7,6 +7,9 @@ use App\Filament\Resources\Jailbooks\Pages\EditJailbook;
 use App\Filament\Resources\Jailbooks\Pages\ListJailbooks;
 use App\Filament\Resources\Jailbooks\Schemas\JailbookForm;
 use App\Filament\Resources\Jailbooks\Tables\JailbooksTable;
+use App\Filament\Resources\Jailbooks\RelationManagers\FingerprintRelationManager;
+use App\Filament\Resources\Jailbooks\RelationManagers\IdentifiedMarksRelationManager;
+
 use App\Models\Jailbook;
 use BackedEnum;
 use UnitEnum;
@@ -35,10 +38,12 @@ class JailbookResource extends Resource
         return JailbooksTable::configure($table);
     }
 
+    // ✅ REGISTER RELATION MANAGERS HERE
     public static function getRelations(): array
     {
         return [
-            //
+            FingerprintRelationManager::class,
+            IdentifiedMarksRelationManager::class,
         ];
     }
 

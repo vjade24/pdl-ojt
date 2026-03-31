@@ -17,11 +17,10 @@ class FingerprintsTable
     {
         return $table
             ->columns([
-               
-
-                TextColumn::make('inmate.full_name')
-                    ->label('Inmate Name')
-                    ->searchable(['firstname', 'lastname']),
+                TextColumn::make('jailbook.case_no')
+                    ->label('Jailbook')
+                    ->searchable()
+                    ->sortable(),
 
                 TextColumn::make('fingerprint_date')
                     ->date('M d, Y')

@@ -83,4 +83,9 @@ class SpecimensRelationManager extends RelationManager
                 ]),
             ]);
     }
+
+    public static function getTab(): ?string
+    {
+    return 'specimens';
+    }
 }

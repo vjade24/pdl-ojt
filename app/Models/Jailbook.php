@@ -38,7 +38,7 @@ class Jailbook extends Model
         'completion',
         'receiving_officer',
         'chief_admin',
-        'prov_warden',
+        'provincial_warden',
         'detention_from',
         'detention_to',
         'status',
@@ -77,6 +77,16 @@ class Jailbook extends Model
     public function inmateProfile()
     {
     return $this->belongsTo(InmateProfile::class);
+    }
+
+    public function fingerprint()
+    {
+    return $this->hasOne(Fingerprint::class);
+    }
+
+    public function identifiedMarks()
+    {
+    return $this->hasMany(IdentifiedMark::class);
     }
     
 }
