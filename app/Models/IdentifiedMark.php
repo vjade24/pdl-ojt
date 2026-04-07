@@ -8,8 +8,12 @@ class IdentifiedMark extends Model
 {
     protected $fillable = [
         'jailbook_id',
-        'marks',
         'marked_image',
+        'mark_details',
+    ];
+
+    protected $casts = [
+    'mark_details' => 'array',
     ];
 
     public function jailbook()

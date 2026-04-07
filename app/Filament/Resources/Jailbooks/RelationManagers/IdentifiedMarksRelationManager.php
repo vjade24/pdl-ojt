@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources\Jailbooks\RelationManagers;
 
-use Illuminate\Support\Facades\Storage;
-
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Textarea;
@@ -27,117 +26,112 @@ class IdentifiedMarksRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'marks';
 
-    /**
-     * Save marked image per view (front, back, right, left)
-     */
-    public function saveMarkedImage($base64)
-    {
-        $image = str_replace('data:image/png;base64,', '', $base64);
-        $image = str_replace(' ', '+', $image);
-
-        $fileName = 'marks/' . uniqid() . '.png';
-
-        Storage::disk('public')->put($fileName, base64_decode($image));
-
-        $view = $this->form->getState()['view_type'] ?? null;
-
-        if ($view) {
-            $this->form->fill([
-                "{$view}_image" => $fileName,
-            ]);
-        }
-
-        return $fileName;
-    }
+     public $dots = [];
 
     /**
-     * Form
+     * FORM
      */
     public function form(Schema $schema): Schema
     {
         return $schema->components([
 
-            // still optional (can remove if unused)
-            Hidden::make('marked_image')->dehydrated(true),
+           
+            Hidden::make('marked_image')
+                
+                ->dehydrated(true),
 
-            Hidden::make('view_type'),
+          
+            Hidden::make('dots')
+                ->dehydrated(true),
 
             ViewField::make('body_marker')
                 ->view('filament.components.body-marker')
                 ->columnSpanFull(),
 
-            Textarea::make('marks')
-                ->label('Description')
-                ->required()
-                ->columnSpanFull(),
+           
         ]);
     }
 
     /**
-     * Table
+     * TABLE
      */
     public function table(Table $table): Table
     {
         return $table
             ->columns([
 
-                ImageColumn::make('front_image')
-                    ->label('Front')
-                    ->disk('public')
-                    ->height(60)
-                    ->extraImgAttributes(['style' => 'cursor:pointer'])
-                    ->url(fn ($record) => $record->front_image
-                        ? asset('storage/' . $record->front_image)
-                        : null,
-                        true
-                    ),
+                ImageColumn::make('marked_image')
+                    ->label('Marked Body')
+                    ->height(80)
+                    ->getStateUsing(fn ($record) => $record->marked_image 
+                    ? url('storage/' . $record->marked_image) 
+            : null
+                ),
 
-                ImageColumn::make('back_image')
-                    ->label('Back')
-                    ->disk('public')
-                    ->height(60)
-                    ->extraImgAttributes(['style' => 'cursor:pointer'])
-                    ->url(fn ($record) => $record->back_image
-                        ? asset('storage/' . $record->back_image)
-                        : null,
-                        true
-                    ),
-
-                ImageColumn::make('right_image')
-                    ->label('Right')
-                    ->disk('public')
-                    ->height(60)
-                    ->extraImgAttributes(['style' => 'cursor:pointer'])
-                    ->url(fn ($record) => $record->right_image
-                        ? asset('storage/' . $record->right_image)
-                        : null,
-                        true
-                    ),
-
-                ImageColumn::make('left_image')
-                    ->label('Left')
-                    ->disk('public')
-                    ->height(60)
-                    ->extraImgAttributes(['style' => 'cursor:pointer'])
-                    ->url(fn ($record) => $record->left_image
-                        ? asset('storage/' . $record->left_image)
-                        : null,
-                        true
-                    ),
-
-                TextColumn::make('marks')
-                    ->wrap()
-                    ->searchable(),
+               
 
                 TextColumn::make('created_at')
                     ->dateTime('M d, Y'),
             ])
 
-            ->headerActions([
-                CreateAction::make(),
+                    ->headerActions([
+               CreateAction::make()
+        ->mutateFormDataUsing(function (array $data) {
+
+        if (empty($this->dots)) {
+            throw new \Exception('Please add at least one mark.');
+        }
+
+        $imagePath = public_path('images/body/combined.png');
+        $image = imagecreatefrompng($imagePath);
+
+        $width = imagesx($image);
+        $height = imagesy($image);
+
+       $yellow = imagecolorallocate($image, 255, 255, 0);
+$black = imagecolorallocate($image, 0, 0, 0);
+
+foreach ($this->dots as $index => $dot) {
+    $x = $dot['x'] * $width;
+    $y = $dot['y'] * $height;
+
+    imagefilledellipse($image, $x, $y, 20, 20, $yellow);
+
+    $number = (string) ($index + 1);
+
+    imagestring(
+        $image,
+        5,
+        $x - (strlen($number) * 4),
+        $y - 8,
+        $number,
+        $black
+    );
+}
+
+        $fileName = 'marks/' . uniqid() . '.png';
+        $fullPath = storage_path('app/public/' . $fileName);
+
+        imagepng($image, $fullPath);
+        imagedestroy($image);
+
+        $data['marked_image'] = $fileName;
+
+       
+        $data['mark_details'] = json_encode($this->dots);
+
+        return $data;
+    })
             ])
 
             ->recordActions([
+                  ViewAction::make()
+                    ->modalHeading('View Identified Mark')
+                    ->form([
+                ViewField::make('image_view')
+                    ->view('filament.components.view-mark-image')
+                    ->columnSpanFull(),               
+        ]),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
