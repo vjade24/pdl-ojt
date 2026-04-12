@@ -49,8 +49,7 @@ class SpecimensRelationManager extends RelationManager
                     ->downloadable()
                     ->required(),
 
-                Textarea::make('remarks')
-                    ->columnSpanFull(),
+                
             ]);
     }
 

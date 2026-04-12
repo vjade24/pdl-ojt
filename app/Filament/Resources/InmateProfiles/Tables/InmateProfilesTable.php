@@ -15,7 +15,10 @@ class InmateProfilesTable
         return $table
             ->columns([
 
-               
+            TextColumn::make('inmate_id')
+            ->label('ID')
+            ->limit(20),
+
 
            TextColumn::make('fullname')
             ->label('Full Name')
@@ -42,6 +45,12 @@ class InmateProfilesTable
                 ->limit(20),
             
             TextColumn::make('place_of_birth')
+                ->limit(20),
+
+            TextColumn::make('married_lastname')
+                ->limit(20),
+
+            TextColumn::make('skills')
                 ->limit(20),
 
             

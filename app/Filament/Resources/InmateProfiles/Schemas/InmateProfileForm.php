@@ -31,6 +31,11 @@ class InmateProfileForm
                     ])
                     ->schema([
 
+                        TextInput::make('inmate_id')
+                            ->label('Inmate ID')
+                            ->numeric()
+                            ->required(),
+
                         
 
                         TextInput::make('firstname')
@@ -80,6 +85,12 @@ class InmateProfileForm
                             ])
                             ->required()
                             ->native(false),
+                        
+                        TextInput::make('married_lastname')
+                            ->label("Married Lastname"),
+
+                        TextInput::make('skills')
+                            ->label("skills"),
 
                         TextInput::make('mother_name')
                             ->label("Mother's Name")
@@ -88,6 +99,8 @@ class InmateProfileForm
                         TextInput::make('father_name')
                             ->label("Father's Name")
                             ->columnSpanFull(),
+
+                        
                     ]),
 
                

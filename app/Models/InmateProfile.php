@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class InmateProfile extends Model
 {
     protected $fillable = [
-        'pdl_number',
         'firstname',
         'middlename',
         'lastname',
@@ -23,6 +22,9 @@ class InmateProfile extends Model
         'place_of_birth',
         'mother_name',
         'father_name',
+        'skills',
+        'married_lastname',
+        'inmate_id',
     ];
 
     public function religion()

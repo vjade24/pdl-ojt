@@ -21,24 +21,7 @@ class ReportController extends Controller
         ])->findOrFail($id);
 
       
-        $marks = $jailbook->identifiedMarks->map(function ($mark) {
-
-            $details = json_decode($mark->mark_details, true);
-
-            $cleanDetails = collect($details)->map(function ($d) {
-                return [
-                    'side' => $d['side'] ?? null,
-                    'desc' => $d['desc'] ?? null,
-                ];
-            });
-
-            return [
-                'marked_image' => $mark->marked_image
-                    ? url('storage/' . $mark->marked_image)
-                    : null,
-                'mark_details' => $cleanDetails,
-            ];
-        });
+       
 
    
         $fingerprint = null;
@@ -60,52 +43,80 @@ class ReportController extends Controller
             ];
         }
 
+       $marksWithImage = $jailbook->identifiedMarks->map(function ($mark) {
+
+    $details = json_decode($mark->mark_details, true);
+
+    return [
+        'marked_image' => $mark->marked_image
+            ? url('storage/' . $mark->marked_image)
+            : null,
+
+        'mark_details' => collect($details)->map(function ($d) {
+            return [
+                'side' => $d['side'] ?? null,
+                'desc' => $d['desc'] ?? null,
+            ];
+        }),
+    ];
+});
+
+
+$marksDetails = $marksWithImage->flatMap(function ($mark) {
+    return $mark['mark_details'];
+});
+
+       
+
         $data = [
-            'case_no' => $jailbook->case_no,
-            'address' => $jailbook->address,
-            'civilStatus' => $jailbook->civilStatus,
+            'id' => $jailbook->inmate->inmate_id,
+            'fullname' => $jailbook->inmate->fullname,
+            'sex' => $jailbook->inmate->sex,
+            'age' => $jailbook->inmate->birthdate
+             ? abs((int) now()->diffInYears($jailbook->inmate->birthdate))
+            : null,
+            'offense' => $jailbook->offense->offense_descr ?? null,
             'height' => $jailbook->height,
             'weight' => $jailbook->weight,
+            'case_no' => $jailbook->case_no,
+            'religion' => $jailbook->inmate->religion->religion_name ?? null,
             'hair' => $jailbook->hair,
             'alias' => $jailbook->alias,
             'complexion' => $jailbook->complexion,
+            'birthdate' => $jailbook->inmate->birthdate,
+            'place_of_birth' => $jailbook->inmate->place_of_birth,
             'occupation' => $jailbook->occupation,
-
-            'date_received' => $jailbook->date_received,
-            'detention_from' => $jailbook->detention_from,
-            'detention_to' => $jailbook->detention_to,
-            'status' => $jailbook->status,
-
-                'firstname' => $jailbook->inmate->firstname,
-                'middlename' => $jailbook->inmate->middlename,
-                'lastname' => $jailbook->inmate->lastname,
-                'birthdate' => $jailbook->inmate->birthdate,
-                'sex' => $jailbook->inmate->sex,
-                'place_of_birth' => $jailbook->inmate->place_of_birth,
-
-                'religion' => $jailbook->inmate->religion->religion_name ?? null,
-                'ethnicity' => $jailbook->inmate->ethnicity->ethnicity_name ?? null,
-
-                'mother_name' => $jailbook->inmate->mother_name,
-                'father_name' => $jailbook->inmate->father_name,
-            
-            'offense' => $jailbook->offense->offense_descr ?? null,
-
-            
-                'court_name' => $jailbook->court->court_name ?? null,
-                'court_address' => $jailbook->court->court_address ?? null,
-          
-
+            'civilStatus' => $jailbook->civilStatus,
+            'father_name' => $jailbook->inmate->father_name,
+            'mother_name' => $jailbook->inmate->mother_name,
+            'address' => $jailbook->address, 
+            'wife_husband' => $jailbook->wife_husb_name,
+            'wife_add' => $jailbook ->wife_husb_add, 
+            'educ_attainment' => $jailbook ->educ_attainment,
+            'ethnicity' => $jailbook->inmate->ethnicity->ethnicity_name ?? null,
+            'skills' =>    $jailbook->inmate->skills,
+            'visited' => $jailbook->place_visited,
+            'court_name' => $jailbook->court->court_name ?? null,
             'judge' => trim(
                 ($jailbook->judge->firstname ?? '') . ' ' .
                 ($jailbook->judge->middlename ?? '') . ' ' .
                 ($jailbook->judge->lastname ?? '')
             ),
-
+            'date_received' => $jailbook->date_received,
+            'endorsing_officer' => $jailbook->endorsing_officer,
             'station' => $jailbook->station->station_name ?? null,
+            'identified_marks' => $marksDetails,
+            'circumstances_arrest' => $jailbook->circum_arrest,
+            'Confiscated' => $jailbook->confiscated,
+            'Completion' => $jailbook->completion,
+            'receiving_officer' => $jailbook->receiving_officer,
+            'chief_admin' => $jailbook->chief_admin,
+            'Provincial_Warden' => $jailbook->prov_warden,
+            'identified_marks_images' => $marksWithImage->pluck('marked_image'),
+            
 
-            'identified_marks' => $marks,
 
+           
             'fingerprint' => $fingerprint,
         ];
 

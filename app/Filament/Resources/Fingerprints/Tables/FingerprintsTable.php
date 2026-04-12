@@ -30,13 +30,6 @@ class FingerprintsTable
                 TextColumn::make('taken_by')
                     ->label('Taken By')
                     ->searchable(),
-                
-                
-                TextColumn::make('specimens')
-                    ->label('Fingers')
-                    ->formatStateUsing(fn ($record) =>
-                    $record->specimens->pluck('finger_name')->join(', ')
-                    ),
 
   
              

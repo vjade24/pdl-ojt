@@ -26,8 +26,7 @@ class FingerprintForm
 
                 TextInput::make('taken_by'),
 
-                Textarea::make('remarks')
-                    ->columnSpanFull(),
+             
 
                  
 

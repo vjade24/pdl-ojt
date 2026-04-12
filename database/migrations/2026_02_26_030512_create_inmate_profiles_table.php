@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('inmate_profiles', function (Blueprint $table) {
             $table->id();
 
-            // Basic Information
+     
             $table->string('pdl_number')->unique();
             $table->string('firstname');
             $table->string('middlename')->nullable();
@@ -24,22 +24,18 @@ return new class extends Migration
             $table->string('sex');
             $table->string('civil_status');
 
-            // ✅ NEW: Place of Birth
+         
             $table->string('place_of_birth')->nullable();
 
-            // Physical Info
             $table->string('height')->nullable();
             $table->string('weight')->nullable();
             $table->string('complexion')->nullable();
 
-            // Foreign Keys (keep only needed ones)
+      
             $table->foreignId('religion_id')->constrained()->cascadeOnDelete();
             $table->foreignId('ethnicity_id')->constrained()->cascadeOnDelete();
 
-            // ❌ REMOVE ADDRESS FIELDS
-            // province_id
-            // municipality_id
-            // barangay_id
+        
 
             $table->timestamps();
         });

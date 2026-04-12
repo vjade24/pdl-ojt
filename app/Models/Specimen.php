@@ -10,7 +10,6 @@ class Specimen extends Model
         'fingerprint_id',
         'finger_name',
         'fingerprint_image',
-        'remarks',
     ];
 
     public function fingerprint()
