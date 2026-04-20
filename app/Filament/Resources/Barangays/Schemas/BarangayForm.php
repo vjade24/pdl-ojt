@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Barangays\Schemas;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
-
+ use App\Models\Municipality;
 class BarangayForm
 {
     public static function configure(Schema $schema): Schema
@@ -17,12 +17,13 @@ class BarangayForm
                     ->required()
                     ->maxLength(255),
 
-                Select::make('municipality_id')
-                    ->relationship('municipality', 'municipality_name')
-                    
-                    ->required(),
-
                
+
+Select::make('municipality_id')
+    ->label('Municipality')
+    ->options(Municipality::pluck('municipality_name', 'id'))
+    ->required(),
+
             ]);
     }
 }

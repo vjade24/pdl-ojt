@@ -24,8 +24,16 @@ class EthnicitiesTable
             ->filters([
                 //
             ])
-            ->recordActions([
-                EditAction::make(),
+             ->recordActions([
+    
+       
+
+    EditAction::make()
+        ->icon('heroicon-m-pencil-square')
+        ->color('primary')
+        ->button()
+        ->label('') 
+        ->tooltip('Edit') 
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

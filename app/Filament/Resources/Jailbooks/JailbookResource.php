@@ -48,11 +48,11 @@ class JailbookResource extends Resource
     }
 
     public static function getPages(): array
-    {
-        return [
-            'index' => ListJailbooks::route('/'),
-            'create' => CreateJailbook::route('/create'),
-            'edit' => EditJailbook::route('/{record}/edit'),
-        ];
-    }
+{
+    return [
+        'index' => ListJailbooks::route('/'),
+        'create' => CreateJailbook::route('/create'),
+        'edit' => Pages\CustomEditJailbook::route('/{record}/edit'),
+    ];
+}
 }

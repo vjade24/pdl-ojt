@@ -38,7 +38,7 @@ class Jailbook extends Model
         'completion',
         'receiving_officer',
         'chief_admin',
-        'provincial_warden',
+        'prov_warden',
         'detention_from',
         'detention_to',
         'status',

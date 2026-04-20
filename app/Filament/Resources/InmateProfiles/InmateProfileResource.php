@@ -51,7 +51,7 @@ class InmateProfileResource extends Resource
             'index' => ListInmateProfiles::route('/'),
             'create' => CreateInmateProfile::route('/create'),
             'edit' => EditInmateProfile::route('/{record}/edit'),
-            'view' => ViewInmateProfile::route('/{record}')
+            'edit' => Pages\CustomEditInmate::route('/{record}/edit'),
             
         ];
     }

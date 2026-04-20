@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\ViewAction;
+use Filament\Actions\Action;
 class InmateProfilesTable
 {
     public static function configure(Table $table): Table
@@ -28,53 +29,49 @@ class InmateProfilesTable
             ->searchable()
             ->sortable(),
 
-            
-
-            TextColumn::make('birthdate')
-                ->date('m/d/Y')
-                ->sortable(),
-
             TextColumn::make('sex'),
 
-            TextColumn::make('civil_status'),
-
-            TextColumn::make('mother_name')
-                ->limit(20),
-
-            TextColumn::make('father_name')
-                ->limit(20),
-            
-            TextColumn::make('place_of_birth')
-                ->limit(20),
-
-            TextColumn::make('married_lastname')
-                ->limit(20),
+            TextColumn::make('civil_status'),           
 
             TextColumn::make('skills')
                 ->limit(20),
 
             
 
-            TextColumn::make('religion.religion_name')
-                ->label('Religion')
-                ->sortable()
-                ->searchable(),
-
-            TextColumn::make('ethnicity.ethnicity_name')
-                ->label('Ethnicity')
-                ->sortable()
-                ->searchable(),
+           
         ])
         ->filters([
             
         ])
-        ->recordActions([
-        EditAction::make(),
-        ViewAction::make(),
+       ->recordActions([
 
-       
-       
-    ])
+    ViewAction::make()
+        ->icon('heroicon-m-eye')
+        ->color('info')
+        ->button()
+        ->label('')
+        ->tooltip('View'),
+
+    EditAction::make()
+        ->icon('heroicon-m-pencil-square')
+        ->color('primary')
+        ->button()
+        ->label('')
+        ->tooltip('Edit'),
+
+    Action::make('print')
+    ->icon('heroicon-m-printer')
+    ->color('success')
+    ->button()
+    ->label('')
+    ->tooltip('Print')
+    ->url(fn ($record) => route('report.pdf', [
+        'inmate_id' => $record->id,
+        'id' => $record->jailbook->id ?? null,
+    ]))
+    ->openUrlInNewTab(),
+
+])
         ->toolbarActions([
             BulkActionGroup::make([
                 DeleteBulkAction::make(),

@@ -23,6 +23,11 @@ class MunicipalityResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+    return false;
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
     public static function form(Schema $schema): Schema

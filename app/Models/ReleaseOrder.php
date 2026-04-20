@@ -9,6 +9,7 @@ class ReleaseOrder extends Model
     protected $fillable = [
         'jailbook_id',
         'court_order_id',
+        'judge_id',
         'release_date',
         'release_reason',
         'remarks',
@@ -25,5 +26,10 @@ class ReleaseOrder extends Model
     public function courtOrder()
     {
         return $this->belongsTo(CourtOrder::class);
+    }
+
+    public function judge()
+    {
+        return $this->belongsTo(Judge::class);
     }
 }

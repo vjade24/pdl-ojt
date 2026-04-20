@@ -4,12 +4,135 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Jailbook;
+use App\Models\InmateProfile;
 
 class ReportController extends Controller
 {
-    public function generate($id)
+    public function generate(Request $request)
+{
+    $inmateId = $request->inmate_id;
+    $reportId = $request->id;
+
+    $jailbook = Jailbook::with([
+        'inmate.religion',
+        'inmate.ethnicity',
+        'offense',
+        'court',
+        'judge',
+        'station',
+        'identifiedMarks',
+        'fingerprint.specimens',
+    ])
+    ->where('id', $reportId)
+    ->whereHas('inmate', function ($query) use ($inmateId) {
+        $query->where('id', $inmateId);
+    })
+    ->first();
+
+   
+    if (!$jailbook) {
+        return response()->json(['message' => 'Record not found'], 404);
+    }
+
+    
+    $fingerprint = null;
+
+    if ($jailbook->fingerprint) {
+        $fingerprint = [
+            'fingerprint_date' => $jailbook->fingerprint->fingerprint_date,
+            'taken_by' => $jailbook->fingerprint->taken_by,
+            'remarks' => $jailbook->fingerprint->remarks,
+            'specimens' => $jailbook->fingerprint->specimens->map(function ($s) {
+                return [
+                    'finger_name' => $s->finger_name,
+                    'fingerprint_image' => $s->fingerprint_image
+                        ? url('storage/' . $s->fingerprint_image)
+                        : null,
+                    'remarks' => $s->remarks,
+                ];
+            }),
+        ];
+    }
+
+    $marksWithImage = $jailbook->identifiedMarks->map(function ($mark) {
+        $details = json_decode($mark->mark_details, true);
+
+        return [
+            'marked_image' => $mark->marked_image
+                ? url('storage/' . $mark->marked_image)
+                : null,
+            'mark_details' => collect($details)->map(function ($d) {
+                return [
+                    'side' => $d['side'] ?? null,
+                    'desc' => $d['desc'] ?? null,
+                ];
+            }),
+        ];
+    });
+
+    $marksDetails = $marksWithImage->flatMap(fn ($mark) => $mark['mark_details']);
+
+                $data = [
+                'id' => $jailbook->inmate->inmate_id,
+                'fullname' => $jailbook->inmate->fullname,
+                'sex' => $jailbook->inmate->sex,
+                'age' => $jailbook->inmate->birthdate
+                ? abs((int) now()->diffInYears($jailbook->inmate->birthdate))
+                : null,
+                'offense' => $jailbook->offense->offense_descr ?? null,
+                'height' => $jailbook->height,
+                'weight' => $jailbook->weight,
+                'case_no' => $jailbook->case_no,
+                'religion' => $jailbook->inmate->religion->religion_name ?? null,
+                'hair' => $jailbook->hair,
+                'alias' => $jailbook->alias,
+                'complexion' => $jailbook->complexion,
+                'birthdate' => $jailbook->inmate->birthdate,
+                'place_of_birth' => $jailbook->inmate->place_of_birth,
+                'occupation' => $jailbook->occupation,
+                'civilStatus' => $jailbook->civilStatus,
+                'father_name' => $jailbook->inmate->father_name,
+                'mother_name' => $jailbook->inmate->mother_name,
+                'address' => $jailbook->address, 
+                'wife_husband' => $jailbook->wife_husb_name,
+                'wife_add' => $jailbook ->wife_husb_add, 
+                'educ_attainment' => $jailbook ->educ_attainment,
+                'ethnicity' => $jailbook->inmate->ethnicity->ethnicity_name ?? null,
+                'skills' =>    $jailbook->inmate->skills,
+                'visited' => $jailbook->place_visited,
+                'court_name' => $jailbook->court->court_name ?? null,
+                'judge' => trim(
+                    ($jailbook->judge->firstname ?? '') . ' ' .
+                    ($jailbook->judge->middlename ?? '') . ' ' .
+                    ($jailbook->judge->lastname ?? '')
+                ),
+                'date_received' => $jailbook->date_received,
+                'endorsing_officer' => $jailbook->endorsing_officer,
+                'station' => $jailbook->station->station_name ?? null,
+                'identified_marks' => $marksDetails,
+                'circumstances_arrest' => $jailbook->circum_arrest,
+                'Confiscated' => $jailbook->confiscated,
+                'Completion' => $jailbook->completion,
+                'receiving_officer' => $jailbook->receiving_officer,
+                'chief_admin' => $jailbook->chief_admin,
+                'Provincial_Warden' => $jailbook->prov_warden,
+                'identified_marks_images' => $marksWithImage->pluck('marked_image'),
+                
+
+
+            
+                'fingerprint' => $fingerprint,
+            ];
+
+            return response()->json([
+                $data,
+            ]);
+        }
+
+
+    public function index()
     {
-        $jailbook = Jailbook::with([
+        $jailbooks = Jailbook::with([
             'inmate.religion',
             'inmate.ethnicity',
             'offense',
@@ -18,110 +141,75 @@ class ReportController extends Controller
             'station',
             'identifiedMarks',
             'fingerprint.specimens',
-        ])->findOrFail($id);
+        ])->get();
 
-      
-       
+        $result = $jailbooks->map(function ($jailbook) {
 
-   
-        $fingerprint = null;
+            $fingerprint = null;
 
-        if ($jailbook->fingerprint) {
-            $fingerprint = [
-                'fingerprint_date' => $jailbook->fingerprint->fingerprint_date,
-                'taken_by' => $jailbook->fingerprint->taken_by,
-                'remarks' => $jailbook->fingerprint->remarks,
-                'specimens' => $jailbook->fingerprint->specimens->map(function ($s) {
-                    return [
-                        'finger_name' => $s->finger_name,
-                        'fingerprint_image' => $s->fingerprint_image
-                            ? url('storage/' . $s->fingerprint_image)
-                            : null,
-                        'remarks' => $s->remarks,
-                    ];
-                }),
-            ];
-        }
+            if ($jailbook->fingerprint) {
+                $fingerprint = [
+                    'fingerprint_date' => $jailbook->fingerprint->fingerprint_date,
+                    'taken_by' => $jailbook->fingerprint->taken_by,
+                    'remarks' => $jailbook->fingerprint->remarks,
+                    'specimens' => $jailbook->fingerprint->specimens->map(function ($s) {
+                        return [
+                            'finger_name' => $s->finger_name,
+                            'fingerprint_image' => $s->fingerprint_image
+                                ? url('storage/' . $s->fingerprint_image)
+                                : null,
+                            'remarks' => $s->remarks,
+                        ];
+                    }),
+                ];
+            }
 
-       $marksWithImage = $jailbook->identifiedMarks->map(function ($mark) {
+            $marksWithImage = $jailbook->identifiedMarks->map(function ($mark) {
+                $details = json_decode($mark->mark_details, true);
 
-    $details = json_decode($mark->mark_details, true);
+                return [
+                    'marked_image' => $mark->marked_image
+                        ? url('storage/' . $mark->marked_image)
+                        : null,
+                    'mark_details' => collect($details)->map(function ($d) {
+                        return [
+                            'side' => $d['side'] ?? null,
+                            'desc' => $d['desc'] ?? null,
+                        ];
+                    }),
+                ];
+            });
 
-    return [
-        'marked_image' => $mark->marked_image
-            ? url('storage/' . $mark->marked_image)
-            : null,
+            $marksDetails = $marksWithImage->flatMap(function ($mark) {
+                return $mark['mark_details'];
+            });
 
-        'mark_details' => collect($details)->map(function ($d) {
             return [
-                'side' => $d['side'] ?? null,
-                'desc' => $d['desc'] ?? null,
+                'report_id' => $jailbook->id,
+                'id' => $jailbook->inmate->inmate_id,
+                'fullname' => $jailbook->inmate->fullname,
+                'sex' => $jailbook->inmate->sex,
+                'age' => $jailbook->inmate->birthdate
+                    ? abs((int) now()->diffInYears($jailbook->inmate->birthdate))
+                    : null,
+                'offense' => $jailbook->offense->offense_descr ?? null,
+                'identified_marks' => $marksDetails,
+                'fingerprint' => $fingerprint,
             ];
-        }),
-    ];
-});
+        });
 
+        return response()->json($result);
+    }
 
-$marksDetails = $marksWithImage->flatMap(function ($mark) {
-    return $mark['mark_details'];
-});
+    public function inmate_report(Request $request)
+    {
 
-       
-
-        $data = [
-            'id' => $jailbook->inmate->inmate_id,
-            'fullname' => $jailbook->inmate->fullname,
-            'sex' => $jailbook->inmate->sex,
-            'age' => $jailbook->inmate->birthdate
-             ? abs((int) now()->diffInYears($jailbook->inmate->birthdate))
-            : null,
-            'offense' => $jailbook->offense->offense_descr ?? null,
-            'height' => $jailbook->height,
-            'weight' => $jailbook->weight,
-            'case_no' => $jailbook->case_no,
-            'religion' => $jailbook->inmate->religion->religion_name ?? null,
-            'hair' => $jailbook->hair,
-            'alias' => $jailbook->alias,
-            'complexion' => $jailbook->complexion,
-            'birthdate' => $jailbook->inmate->birthdate,
-            'place_of_birth' => $jailbook->inmate->place_of_birth,
-            'occupation' => $jailbook->occupation,
-            'civilStatus' => $jailbook->civilStatus,
-            'father_name' => $jailbook->inmate->father_name,
-            'mother_name' => $jailbook->inmate->mother_name,
-            'address' => $jailbook->address, 
-            'wife_husband' => $jailbook->wife_husb_name,
-            'wife_add' => $jailbook ->wife_husb_add, 
-            'educ_attainment' => $jailbook ->educ_attainment,
-            'ethnicity' => $jailbook->inmate->ethnicity->ethnicity_name ?? null,
-            'skills' =>    $jailbook->inmate->skills,
-            'visited' => $jailbook->place_visited,
-            'court_name' => $jailbook->court->court_name ?? null,
-            'judge' => trim(
-                ($jailbook->judge->firstname ?? '') . ' ' .
-                ($jailbook->judge->middlename ?? '') . ' ' .
-                ($jailbook->judge->lastname ?? '')
-            ),
-            'date_received' => $jailbook->date_received,
-            'endorsing_officer' => $jailbook->endorsing_officer,
-            'station' => $jailbook->station->station_name ?? null,
-            'identified_marks' => $marksDetails,
-            'circumstances_arrest' => $jailbook->circum_arrest,
-            'Confiscated' => $jailbook->confiscated,
-            'Completion' => $jailbook->completion,
-            'receiving_officer' => $jailbook->receiving_officer,
-            'chief_admin' => $jailbook->chief_admin,
-            'Provincial_Warden' => $jailbook->prov_warden,
-            'identified_marks_images' => $marksWithImage->pluck('marked_image'),
-            
-
-
-           
-            'fingerprint' => $fingerprint,
-        ];
+        $data = InmateProfile::with(['religion','ethnicity'])
+                    ->where('id', $request->inmate_id)->get();
 
         return response()->json([
-             $data,
-        ]);
+            $data,
+        ]);               
+
     }
 }
