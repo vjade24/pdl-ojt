@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Jailbooks\RelationManagers;
 
 use App\Filament\Resources\Fingerprints\FingerprintResource;
+use App\Filament\Resources\Fingerprints\Tables\FingerprintsTable;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -27,33 +28,13 @@ class FingerprintRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
-        return $table
-            ->recordTitleAttribute('fingerprint_date')
-            ->columns([
-                TextColumn::make('fingerprint_date')
-                    ->searchable(),
-            ])
+        return FingerprintsTable::configure($table)
             ->headerActions([
-                CreateAction::make()
-                    ->after(function ($record, $livewire) {
-                        // 🔥 redirect to edit page after create
-                        return redirect()->to(
-                            FingerprintResource::getUrl('edit', ['record' => $record])
-                        );
-                    }),
-
-                AssociateAction::make(),
+                CreateAction::make(),
             ])
             ->recordActions([
                 EditAction::make(),
-                DissociateAction::make(),
                 DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DissociateBulkAction::make(),
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }

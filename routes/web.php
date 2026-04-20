@@ -18,6 +18,6 @@ Route::get('/report/pdf', [PdfController::class, 'generate'])
     ->name('report.pdf');
 
 
-Route::prefix('inmate_report')->group(function () {
+Route::prefix('report')->group(function () {
     Route::get('/inmate_report', [ReportController::class, 'inmate_report']);
 });

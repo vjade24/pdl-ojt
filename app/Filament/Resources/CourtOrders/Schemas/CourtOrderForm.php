@@ -12,6 +12,48 @@ use Filament\Schemas\Schema;
 
 class CourtOrderForm
 {
+    public static function getFormComponents(): array
+    {
+        return [
+            TextInput::make('order_no')
+                ->label('Order Number')
+                ->required()
+                ->unique(ignoreRecord: true)
+                ->placeholder('e.g. CO-001'),
+
+            TextInput::make('case_no')
+                ->required(),
+
+            Select::make('order_category')
+                ->options([
+                    'Commitment Order' => 'Commitment Order',
+                    'Office Memo Resolutions' => 'Office Memo Resolutions',
+                    'Subpoena' => 'Subpoena',
+                    'Discharge Order' => 'Discharge Order',
+                    'Escorting Order' => 'Escorting Order',
+                    'Sentence Order' => 'Sentence Order',
+                ])
+                ->required(),
+
+            DatePicker::make('order_date')
+                ->required(),
+
+            DateTimePicker::make('receive_date'),
+
+            TextInput::make('receive_by'),
+
+            DateTimePicker::make('approved_date'),
+
+            TextInput::make('approved_by'),
+
+            FileUpload::make('attachment')
+                ->multiple()
+                ->directory('court-orders')
+                ->downloadable()
+                ->previewable(),
+        ];
+    }
+
     public static function configure(Schema $schema): Schema
     {
         return $schema

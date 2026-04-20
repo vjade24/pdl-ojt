@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\InmateProfiles\RelationManagers;
 
+use App\Filament\Resources\Jailbooks\JailbookResource;
+use App\Filament\Resources\Jailbooks\Tables\JailbooksTable;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -18,6 +20,8 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+use App\Filament\Resources\Jailbooks\Schemas\JailbookForm;
+
 class JailbookRelationManager extends RelationManager
 {
     protected static string $relationship = 'jailbooks';
@@ -26,110 +30,18 @@ class JailbookRelationManager extends RelationManager
 
     public function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-
-                // Case Info
-                TextInput::make('case_no')
-                    ->label('Case Number')
-                    ->required(),
-
-                TextInput::make('status')
-                    ->default('Detained')
-                    ->required(),
-
-                DateTimePicker::make('date_received')
-                    ->label('Date Received'),
-
-                // Personal Details
-                TextInput::make('alias'),
-                TextInput::make('address'),
-                TextInput::make('civilStatus'),
-                TextInput::make('occupation'),
-
-                // Physical Info
-                TextInput::make('height'),
-                TextInput::make('weight'),
-                TextInput::make('hair'),
-                TextInput::make('complexion'),
-
-                // Family Info
-                Toggle::make('father_decease_tag')
-                    ->label('Father Deceased'),
-
-                Toggle::make('mother_decease_tag')
-                    ->label('Mother Deceased'),
-
-                TextInput::make('wife_husb_name'),
-                TextInput::make('wife_husb_add'),
-
-                // Education & Travel
-                TextInput::make('educ_attainment'),
-                TextInput::make('place_visited'),
-
-                // Officers
-                TextInput::make('endorsing_officer'),
-                TextInput::make('receiving_officer'),
-                TextInput::make('chief_admin'),
-                TextInput::make('prov_warden'),
-
-                // Dates
-                DatePicker::make('detention_from'),
-                DatePicker::make('detention_to'),
-
-                // Notes
-                Textarea::make('circum_arrest')->columnSpanFull(),
-                Textarea::make('confiscated')->columnSpanFull(),
-                Textarea::make('completion')->columnSpanFull(),
-            ]);
+        return JailbookForm::configure($schema);
     }
 
     public function table(Table $table): Table
     {
-        return $table
-            ->recordTitleAttribute('case_no')
-            ->columns([
-                TextColumn::make('case_no')
-                    ->label('Case No')
-                    ->searchable(),
-
-                TextColumn::make('status')
-                    ->badge()
-                    ->color(fn ($state) => match ($state) {
-                        'Detained' => 'warning',
-                        'Released' => 'success',
-                        default => 'gray',
-                    }),
-
-                TextColumn::make('date_received')
-                    ->dateTime()
-                    ->label('Received'),
-
-                TextColumn::make('endorsing_officer')
-                    ->label('Officer'),
-
-                IconColumn::make('father_decease_tag')
-                    ->label('Father')
-                    ->boolean(),
-
-                IconColumn::make('mother_decease_tag')
-                    ->label('Mother')
-                    ->boolean(),
-            ])
-            ->filters([
-                //
-            ])
+        return JailbooksTable::configure($table, hideInmate: true)
             ->headerActions([
                 CreateAction::make(),
             ])
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }

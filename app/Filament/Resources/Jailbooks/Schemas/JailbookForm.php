@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Jailbooks\Schemas;
 
+use App\Filament\Resources\CourtOrders\Schemas\CourtOrderForm;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
@@ -22,7 +23,7 @@ use Illuminate\Validation\Rule;
 
 class JailbookForm
 {
-    public static function configure(Schema $schema): Schema
+    public static function configure(Schema $schema, bool $hideInmate = false): Schema
     {
         return $schema
             ->columns(1)
@@ -41,12 +42,15 @@ class JailbookForm
                                         $record->firstname . ' ' . $record->middlename . ' ' . $record->lastname
                                     )
                                     ->required()
+                                    ->disabled($hideInmate)
+                                    ->dehydrated()
                                     ->reactive()
                                     ->rules([
                                         fn (Get $get, $record) => Rule::unique(Jailbook::class, 'inmate_profile_id')
                                             ->where('court_order_id', $get('court_order_id'))
                                             ->ignore($record?->id),
-                                    ]),
+                                    ])
+                                    ->label('Inmateasdsadad'),
 
                                 Select::make('court_order_id')
                                     ->label('Court Order')
@@ -58,7 +62,11 @@ class JailbookForm
                                         if ($courtOrder) {
                                             $set('case_no', $courtOrder->case_no);
                                         }
-                                    }),
+                                    })
+                                    ->createOptionForm(
+                                        CourtOrderForm::getFormComponents()
+                                    )
+                                    ,
 
                                 TextInput::make('case_no')
                                     ->readOnly()

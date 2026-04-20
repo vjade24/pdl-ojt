@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\InmateProfiles\RelationManagers;
 
+use App\Filament\Resources\Fingerprints\FingerprintResource;
+use App\Filament\Resources\Fingerprints\Tables\FingerprintsTable;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -24,60 +26,18 @@ class FingerprintRelationManager extends RelationManager
 
     public function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('inmate_profile_id')
-                    ->required()
-                    ->numeric(),
-                DatePicker::make('fingerprint_date'),
-                TextInput::make('taken_by'),
-                Textarea::make('remarks')
-                    ->columnSpanFull(),
-            ]);
+        return FingerprintResource::form($schema);
     }
 
     public function table(Table $table): Table
     {
-        return $table
-            ->recordTitleAttribute('taken_by')
-            ->columns([
-              
-                TextColumn::make('fingerprint_date')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('taken_by')
-                    ->searchable(),
-                 TextColumn::make('specimens')
-                    ->label('Fingers')
-                     ->formatStateUsing(fn ($record) =>
-            $record->specimens->pluck('finger_name')->join(', ')
-                 ),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
+        return FingerprintsTable::configure($table)
             ->headerActions([
                 CreateAction::make(),
-                AssociateAction::make(),
             ])
             ->recordActions([
                 EditAction::make(),
-                DissociateAction::make(),
                 DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DissociateBulkAction::make(),
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }

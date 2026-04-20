@@ -11,15 +11,16 @@ use Filament\Actions\ViewAction;
 
 class JailbooksTable
 {
-    public static function configure(Table $table): Table
+    public static function configure(Table $table, bool $hideInmate = false): Table
     {
         return $table
             ->columns([
     \Filament\Tables\Columns\TextColumn::make('inmate.full_name')
         ->label('Inmate')
-        ->searchable(),
+        ->searchable()
+        ->visible(! $hideInmate),
 
-    \Filament\Tables\Columns\TextColumn::make('case_no'),
+    \Filament\Tables\Columns\TextColumn::make('case_no')->label('Case #'),
 
     \Filament\Tables\Columns\TextColumn::make('courtOrder.order_category')
     ->label('Order Category'),
