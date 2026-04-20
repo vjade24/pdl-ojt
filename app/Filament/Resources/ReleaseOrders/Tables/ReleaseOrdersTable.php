@@ -14,10 +14,15 @@ class ReleaseOrdersTable
         return $table
            ->columns([
     \Filament\Tables\Columns\TextColumn::make('jailbook.case_no')
-        ->label('Case No'),
+        ->label('Case No')
+        ->searchable(),
 
     \Filament\Tables\Columns\TextColumn::make('courtOrder.order_no')
         ->label('Order No'),
+
+    \Filament\Tables\Columns\TextColumn::make('judge.full_name')
+        ->label('Judge'),
+
 
     \Filament\Tables\Columns\TextColumn::make('release_date')
         ->date('M d, Y'),
@@ -34,7 +39,13 @@ class ReleaseOrdersTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+
+    EditAction::make()
+        ->icon('heroicon-m-pencil-square')
+        ->color('primary')
+        ->button()
+        ->label('') 
+        ->tooltip('Edit') 
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

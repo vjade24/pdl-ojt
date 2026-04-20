@@ -30,7 +30,15 @@ class BarangaysTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+    
+       
+
+                EditAction::make()
+                    ->icon('heroicon-m-pencil-square')
+                    ->color('primary')
+                    ->button()
+                    ->label('') 
+                    ->tooltip('Edit') 
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

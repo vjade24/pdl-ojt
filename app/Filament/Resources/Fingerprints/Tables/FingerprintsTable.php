@@ -41,8 +41,19 @@ class FingerprintsTable
                     ->dateTime('M d, Y'),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                 ViewAction::make()
+                     ->icon('heroicon-m-eye')
+                     ->color('info')
+                     ->button()
+                     ->label('')
+                     ->tooltip('View'),
+
+                 EditAction::make()
+                     ->icon('heroicon-m-pencil-square')
+                     ->color('primary')
+                     ->button()
+                     ->label('')
+                     ->tooltip('Edit')
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
