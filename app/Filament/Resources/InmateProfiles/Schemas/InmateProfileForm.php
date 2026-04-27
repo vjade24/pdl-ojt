@@ -52,7 +52,7 @@ class InmateProfileForm
                         DatePicker::make('birthdate')
                             ->label('Birthdate')
                             ->required()
-                            ->native(false)
+                            // ->native(false)
                             ->displayFormat('m/d/Y'),
 
                         Select::make('sex')
@@ -90,15 +90,13 @@ class InmateProfileForm
                             ->label("Married Lastname"),
 
                         TextInput::make('skills')
-                            ->label("skills"),
+                            ->label("Skills"),
 
                         TextInput::make('mother_name')
-                            ->label("Mother's Name")
-                            ->columnSpanFull(),
+                            ->label("Mother's Name"),
 
                         TextInput::make('father_name')
-                            ->label("Father's Name")
-                            ->columnSpanFull(),
+                            ->label("Father's Name"),
 
                         
                     ]),

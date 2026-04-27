@@ -30,7 +30,11 @@ class JailbookRelationManager extends RelationManager
 
     public function form(Schema $schema): Schema
     {
-        return JailbookForm::configure($schema);
+        return JailbookForm::configure(
+            $schema,
+            hideInmate: true,
+            selectedInmateId: $this->getOwnerRecord()->id,
+        );
     }
 
     public function table(Table $table): Table

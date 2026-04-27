@@ -29,7 +29,8 @@ class AdminPanelProvider extends PanelProvider
         ->path('admin')
         ->login()
         ->sidebarCollapsibleOnDesktop()
-        
+        ->maxContentWidth('full')
+        ->sidebarWidth('16rem')
         ->navigationGroups([
             'Case Management',
             'Legal Management',

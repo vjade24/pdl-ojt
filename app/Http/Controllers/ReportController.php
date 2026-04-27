@@ -71,6 +71,7 @@ class ReportController extends Controller
     });
 
     $marksDetails = $marksWithImage->flatMap(fn ($mark) => $mark['mark_details']);
+    $formattedMarks = $this->formatIdentifiedMarks($marksDetails);
 
                 $data = [
                 'id' => $jailbook->inmate->inmate_id,
@@ -109,14 +110,14 @@ class ReportController extends Controller
                 'date_received' => $jailbook->date_received,
                 'endorsing_officer' => $jailbook->endorsing_officer,
                 'station' => $jailbook->station->station_name ?? null,
-                'identified_marks' => $marksDetails,
+                'identified_marks' => $formattedMarks,
                 'circumstances_arrest' => $jailbook->circum_arrest,
                 'Confiscated' => $jailbook->confiscated,
                 'Completion' => $jailbook->completion,
                 'receiving_officer' => $jailbook->receiving_officer,
                 'chief_admin' => $jailbook->chief_admin,
                 'Provincial_Warden' => $jailbook->prov_warden,
-                'identified_marks_images' => $marksWithImage->pluck('marked_image'),
+                'identified_marks_images' => $this->formatIdentifiedMarksImages($marksWithImage),
                 
 
 
@@ -183,6 +184,7 @@ class ReportController extends Controller
             $marksDetails = $marksWithImage->flatMap(function ($mark) {
                 return $mark['mark_details'];
             });
+            $formattedMarks = $this->formatIdentifiedMarks($marksDetails);
 
             return [
                 'report_id' => $jailbook->id,
@@ -193,7 +195,7 @@ class ReportController extends Controller
                     ? \Carbon\Carbon::parse($jailbook->inmate->birthdate)->age
                     : null,
                 'offense' => $jailbook->offense->offense_descr ?? null,
-                'identified_marks' => $marksDetails,
+                'identified_marks' => $formattedMarks,
                 'fingerprint' => $fingerprint,
             ];
         });
@@ -295,18 +297,50 @@ class ReportController extends Controller
                 'date_received' => $jailbook->date_received,
                 'endorsing_officer' => $jailbook->endorsing_officer,
                 'station' => $jailbook->station->station_name ?? null,
-                'identified_marks' => $marksDetails,
+
+
                 'circumstances_arrest' => $jailbook->circum_arrest,
                 'Confiscated' => $jailbook->confiscated,
                 'Completion' => $jailbook->completion,
                 'receiving_officer' => $jailbook->receiving_officer,
                 'chief_admin' => $jailbook->chief_admin,
                 'Provincial_Warden' => $jailbook->prov_warden,
-                'identified_marks_images' => $marksWithImage->pluck('marked_image'),
+                'identified_marks_images' => $this->formatIdentifiedMarksImages($marksWithImage),
                 'fingerprint' => $fingerprint,
             ];
         });
 
         return response()->json($result);
+    }
+
+    private function formatIdentifiedMarks($marksDetails): string
+    {
+        return collect($marksDetails)
+            ->map(function ($mark) {
+                $desc = trim((string) ($mark['desc'] ?? ''));
+                $side = trim((string) ($mark['side'] ?? ''));
+
+                if ($desc !== '' && $side !== '') {
+                    return $desc . ' (' . $side . ')';
+                }
+
+                return $desc !== '' ? $desc : ($side !== '' ? '(' . $side . ')' : null);
+            })
+            ->filter()
+            ->implode(', ');
+    }
+
+    private function formatIdentifiedMarksImages($marksWithImage)
+    {
+        return collect($marksWithImage)
+            ->map(function ($mark) {
+                $markDetails = collect($mark['mark_details'] ?? [])->values();
+
+                return [
+                    'marked_image' => $mark['marked_image'] ?? null,
+                    'identified_marks' => $this->formatIdentifiedMarks($markDetails),
+                ];
+            })
+            ->values();
     }
 }

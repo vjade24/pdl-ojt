@@ -23,7 +23,7 @@ use Illuminate\Validation\Rule;
 
 class JailbookForm
 {
-    public static function configure(Schema $schema, bool $hideInmate = false): Schema
+    public static function configure(Schema $schema, bool $hideInmate = false, ?int $selectedInmateId = null): Schema
     {
         return $schema
             ->columns(1)
@@ -33,7 +33,8 @@ class JailbookForm
                     ->tabs([
 
                         Tab::make('Case Information')
-                            ->columns(2)
+                            ->icon('heroicon-o-scale')
+                            ->columns(3)
                             ->schema([
 
                                 Select::make('inmate_profile_id')
@@ -41,6 +42,8 @@ class JailbookForm
                                     ->getOptionLabelFromRecordUsing(fn ($record) =>
                                         $record->firstname . ' ' . $record->middlename . ' ' . $record->lastname
                                     )
+                                    ->default($selectedInmateId)
+                                    ->formatStateUsing(fn ($state) => $state ?: $selectedInmateId)
                                     ->required()
                                     ->disabled($hideInmate)
                                     ->dehydrated()
@@ -49,8 +52,7 @@ class JailbookForm
                                         fn (Get $get, $record) => Rule::unique(Jailbook::class, 'inmate_profile_id')
                                             ->where('court_order_id', $get('court_order_id'))
                                             ->ignore($record?->id),
-                                    ])
-                                    ->label('Inmateasdsadad'),
+                                    ]),
 
                                 Select::make('court_order_id')
                                     ->label('Court Order')
@@ -121,8 +123,38 @@ class JailbookForm
                                     ])
                                     ->columnSpanFull(),
                             ]),
+                        Tab::make('Personal Information')
+                            ->icon('heroicon-o-user')
+                            ->columns(3)
+                            ->schema([
+                                Select::make('civilStatus')
+                                    ->label('Civil Status')
+                                    ->options([
+                                        'Single' => 'Single',
+                                        'Married' => 'Married',
+                                        'Widowed' => 'Widowed',
+                                        'Separated' => 'Separated',
+                                        'Annulled' => 'Annulled',
+                                        'Divorced' => 'Divorced',
+                                    ])
+                                    ->required(),
+                                TextInput::make('height'),
+                                TextInput::make('weight'),
+                                TextInput::make('hair'),
+                                TextInput::make('alias'),
+                                TextInput::make('complexion'),
+                                TextInput::make('occupation'),
+                                TextInput::make('place_visited'),
+                                TextInput::make('educ_attainment')->label('Educational Attainment'),
+                                TextInput::make('wife_husb_name')->label('Wife/Husband Name')->columnSpanFull(),
+                                TextInput::make('wife_husb_add')->label('Wife/Husband Address')->columnSpanFull(),
 
+                                Toggle::make('father_decease_tag')->columnSpan(1)->label('Father Deceased'),
+                                Toggle::make('mother_decease_tag')->columnSpan(1)->label('Mother Deceased'),
+
+                            ]),
                         Tab::make('Address Information')
+                            ->icon('heroicon-o-map-pin')
                             ->columns(3)
                             ->schema([
 
@@ -170,40 +202,13 @@ class JailbookForm
                                     ->columnSpanFull(),
                             ]),
 
-                        Tab::make('Personal Information')
-                            ->columns(3)
-                            ->schema([
-                                Select::make('civilStatus')
-                                    ->label('Civil Status')
-                                    ->options([
-                                        'Single' => 'Single',
-                                        'Married' => 'Married',
-                                        'Widowed' => 'Widowed',
-                                        'Separated' => 'Separated',
-                                        'Annulled' => 'Annulled',
-                                        'Divorced' => 'Divorced',
-                                    ])
-                                    ->required(),
-                                TextInput::make('height'),
-                                TextInput::make('weight'),
-                                TextInput::make('hair'),
-                                TextInput::make('alias'),
-                                TextInput::make('complexion'),
-                                TextInput::make('occupation'),
-                                TextInput::make('place_visited'),
-                                TextInput::make('educ_attainment')->label('Educational Attainment'),
-                                TextInput::make('wife_husb_name')->label('Wife/Husband Name'),
-                                TextInput::make('wife_husb_add')->label('Wife/Husband Address'),
-
-                                Toggle::make('father_decease_tag')->columnSpan(2)->label('Father Deceased'),
-                                Toggle::make('mother_decease_tag')->columnSpan(2)->label('Mother Deceased'),
-
-                            ]),
+                        
 
                         Tab::make('Arrest & Processing')
+                            ->icon('heroicon-o-shield-exclamation')
                             ->columns(2)
                             ->schema([
-                                DateTimePicker::make('date_received'),
+                                DateTimePicker::make('date_received')->columnSpanFull(),
 
                                 TextInput::make('endorsing_officer'),
                                 TextInput::make('receiving_officer'),
@@ -216,6 +221,7 @@ class JailbookForm
                             ]),
 
                         Tab::make('Detention Information')
+                            ->icon('heroicon-o-lock-closed')
                             ->columns(2)
                             ->schema([
                                 DatePicker::make('detention_from'),
