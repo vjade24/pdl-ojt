@@ -312,5 +312,121 @@
     <span class="lib-button-icon">→</span>
     </button>
         </div>
-    </div>
+
+
+        <div class="lib-card">
+            <div class="lib-header">
+                <div class="lib-title">Religions</div>
+
+            </div>
+
+            <div class="lib-stat">
+                <div class="lib-count">{{ number_format($religionCount) }}</div>
+                <div class="lib-sub">
+                    Total Records
+                    <span class="lib-badge">Active</span>
+                </div>
+            </div>
+
+            <button class="lib-button"
+    wire:click="mountAction('viewReligion')"
+    aria-label="View Religion records">
+
+    <span>View Religions</span>
+    <span class="lib-button-icon">→</span>
+    </button>
+        </div>
+
+        <div class="lib-card">
+            <div class="lib-header">
+                <div class="lib-title">Courts</div>
+
+            </div>
+
+            <div class="lib-stat">
+                <div class="lib-count">{{ number_format($courtCount) }}</div>
+                <div class="lib-sub">
+                    Total Records
+                    <span class="lib-badge">Active</span>
+                </div>
+            </div>
+
+            <button class="lib-button"
+    wire:click="mountAction('viewCourt')"
+    aria-label="View Court records">
+
+    <span>View Courts</span>
+    <span class="lib-button-icon">→</span>
+    </button>
+        </div>
+
+        <div class="lib-card">
+            <div class="lib-header">
+                <div class="lib-title">Judges</div>
+
+            </div>
+
+            <div class="lib-stat">
+                <div class="lib-count">{{ number_format($judgeCount) }}</div>
+                <div class="lib-sub">
+                    Total Records
+                    <span class="lib-badge">Active</span>
+                </div>
+            </div>
+
+            <button class="lib-button"
+    wire:click="mountAction('viewJudge')"
+    aria-label="View Judge records">
+
+    <span>View Judges</span>
+    <span class="lib-button-icon">→</span>
+    </button>
+        </div>
+
+        <div class="lib-card">
+            <div class="lib-header">
+                <div class="lib-title">Offenses</div>
+
+            </div>
+
+            <div class="lib-stat">
+                <div class="lib-count">{{ number_format($offenseCount) }}</div>
+                <div class="lib-sub">
+                    Total Records
+                    <span class="lib-badge">Active</span>
+                </div>
+            </div>
+
+            <button class="lib-button"
+    wire:click="mountAction('viewOffense')"
+    aria-label="View Offense records">
+
+    <span>View Offenses</span>
+    <span class="lib-button-icon">→</span>
+    </button>
+        </div>
+
+
+         <div class="lib-card">
+            <div class="lib-header">
+                <div class="lib-title">Stations</div>
+
+            </div>
+
+            <div class="lib-stat">
+                <div class="lib-count">{{ number_format($stationCount) }}</div>
+                <div class="lib-sub">
+                    Total Records
+                    <span class="lib-badge">Active</span>
+                </div>
+            </div>
+
+            <button class="lib-button"
+    wire:click="mountAction('viewStation')"
+    aria-label="View Station records">
+
+    <span>View Stations</span>
+    <span class="lib-button-icon">→</span>
+    </button>
+        </div>
 </x-filament::page>

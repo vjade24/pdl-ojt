@@ -341,40 +341,139 @@
     </div>
 
     <table class="barangay-table" id="barangayTable">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Barangay Name</th>
-                <th>Municipality</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($barangays as $index => $b)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                           
-                            <span>{{ $b->barangay_name }}</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            
-                            <span>{{ $b->municipality->municipality_name ?? '—' }}</span>
-                        </div>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="3" class="empty-state">
-                       
-                        <div class="empty-state-text">No barangays found</div>
-                        <div style="font-size: 12px; margin-top: 4px;">Click to add new barangay</div>
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
+      <!-- ADD ACTION COLUMN -->
+<thead>
+    <tr>
+        <th>#</th>
+        <th>Barangay Name</th>
+        <th>Municipality</th>
+        <th style="text-align:center; width:180px;">Actions</th>
+    </tr>
+</thead>
+
+<tbody>
+    @forelse ($barangays as $index => $b)
+        <tr>
+            <td>{{ $index + 1 }}</td>
+
+            <td>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span>{{ $b->barangay_name }}</span>
+                </div>
+            </td>
+
+            <td>
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span>{{ $b->municipality->municipality_name ?? '—' }}</span>
+                </div>
+            </td>
+
+            <!-- ACTION BUTTONS -->
+            <td style="text-align:center;">
+
+                <!-- Edit -->
+                <button
+                    type="button"
+                    wire:click="editBarangay({{ $b->id }})"
+                    style="
+                        background:#3b82f6;
+                        color:white;
+                        border:none;
+                        padding:6px 12px;
+                        border-radius:6px;
+                        cursor:pointer;
+                        margin-right:5px;
+                        font-size:13px;
+                    "
+                >
+                    Edit
+                </button>
+
+                <!-- Delete -->
+                <button
+                    type="button"
+                    wire:click="deleteBarangay({{ $b->id }})"
+                    onclick="return confirm('Are you sure you want to delete this barangay?')"
+                    style="
+                        background:#ef4444;
+                        color:white;
+                        border:none;
+                        padding:6px 12px;
+                        border-radius:6px;
+                        cursor:pointer;
+                        font-size:13px;
+                    "
+                >
+                    Delete
+                </button>
+
+            </td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="4" class="empty-state">
+                <div class="empty-state-text">No barangays found</div>
+                <div style="font-size:12px; margin-top:4px;">Click to add new barangay</div>
+            </td>
+        </tr>
+    @endforelse
+</tbody>
+
+
+<!-- EDIT FORM -->
+@if($this->editingBarangayId)
+    <div style="margin-top:20px; padding:20px; border:1px solid #e5e7eb; border-radius:8px; background:#f9fafb;">
+
+        <h3 style="margin-bottom:15px; font-size:16px; font-weight:600;">
+            Edit Barangay
+        </h3>
+
+        <input
+            type="text"
+            wire:model="barangay_name"
+            placeholder="Barangay Name"
+            style="
+                width:100%;
+                padding:10px;
+                border:1px solid #d1d5db;
+                border-radius:6px;
+                margin-bottom:15px;
+            "
+        >
+
+        <button
+            type="button"
+            wire:click="updateBarangay"
+            style="
+                background:#10b981;
+                color:white;
+                border:none;
+                padding:8px 16px;
+                border-radius:6px;
+                cursor:pointer;
+                margin-right:8px;
+            "
+        >
+            Update
+        </button>
+
+        <button
+            type="button"
+            wire:click="$set('editingBarangayId', null)"
+            style="
+                background:#6b7280;
+                color:white;
+                border:none;
+                padding:8px 16px;
+                border-radius:6px;
+                cursor:pointer;
+            "
+        >
+            Cancel
+        </button>
+
+    </div>
+@endif
     </table>
 </div>
 
