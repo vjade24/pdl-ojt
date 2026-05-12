@@ -75,8 +75,7 @@ class InmateProfilesTable
     ->modalContent(fn ($record): View => view(
         'livewire.report-viewer',
         [
-            // dd($record->id, $record,config('app.jasper_url')),
-            'report_iframe' => config('app.jasper_url').'/jasperserver/flow.html?pp=u%3DJamshasadid%7Cr%3DManager%7Co%3DEMEA,Sales%7Cpa1%3DSweden&_flowId=viewReportFlow&_flowId=viewReportFlow&_flowId=viewReportFlow&ParentFolderUri=%2Freports%2FL_D&reportUnit=%2Freports%2FL_D%2FMemorandum&standAlone=true&decorate=no&output=pdf&id=8580'
+            'report_iframe' => config('app.jasper_url').'/jasperserver/flow.html?pp=u%3DJamshasadid%7Cr%3DManager%7Co%3DEMEA,Sales%7Cpa1%3DSweden&_flowId=viewReportFlow&_flowId=viewReportFlow&ParentFolderUri=%2Freports%2FPDL&reportUnit=%2Freports%2FPDL%2Fjail_booking_report&standAlone=true&decorate=no&output=pdf&inmate_id='.$record->id.'&jailbooks_id='
         ],
     )),
     // Action::make('print')
